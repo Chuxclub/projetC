@@ -3,12 +3,31 @@
  * Auteurs : Amandine Fradet, Florian Legendre
  ********************************************************************/
 
+
+struct VoitureCellP
+{
+	struct VoitureCellP* previousCell;
+	Voiture v;
+	struct VoitureCellP* nextCell;
+};
+
+typedef struct VoitureCellP* VoitureCell;
+
 struct CollectionP
 {
-}
+	VoitureCell firstCell;
+	int len;
+	int isSorted;
+	VoitureCell lastCell;
+};
 
 Collection col_creer()
 {
+	Collection res = (Collection) malloc(sizeof(*Collection));
+	res->firstCell = NULL;
+	res->len = 0;
+	res->isSorted = true;
+	res->lastCell = NULL;
 }
 
 Collection col_creerCopie(const_Collection source)
