@@ -32,6 +32,10 @@ Collection col_creer()
 
 Collection col_creerCopie(const_Collection source)
 {
+	Collection res = col_creer();
+	
+	res->len = source->len;
+	res->isSorted = source->isSorted;
 }
 
 void col_detruire(Collection *pself)
@@ -50,6 +54,7 @@ void col_vider(Collection self)
 
 int col_getNbVoitures(const_Collection self)
 {
+	return self->len;
 }
 
 Voiture col_getVoiture(const_Collection self, int pos)
