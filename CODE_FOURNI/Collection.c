@@ -28,6 +28,26 @@ struct CollectionP
 	VoitureCell lastCell;
 };
 
+
+/* ===================================================================== */
+/* ======== FONCTIONS SPECIFIQUES A LA LISTE DOUBLEMENT CHAINEE ======== */
+/* ===================================================================== */
+
+VoitureCell createVoitureCell(const_Voiture voiture)
+{
+	VoitureCell res = malloc(sizeof(*VoitureCell));
+	res->previousCell = NULL;
+   	res->v = voi_creerCopie(voiture);
+   	res->nextCell = NULL;
+
+	return res;
+}
+
+
+/* ===================================================================== */
+/* ===================================================================== */
+/* ===================================================================== */
+
 Collection col_creer()
 {
 	Collection res = (Collection) malloc(sizeof(*Collection));
@@ -90,6 +110,28 @@ void col_addVoitureSansTri(Collection self, const_Voiture voiture)
 
 void col_addVoitureAvecTri(Collection self, const_Voiture voiture)
 {
+	assert(self->isSorted);
+	int n = self->len;
+	assert(n > 0);
+
+	if(n == 0)
+	{
+		self->len++;
+		
+		//Création de la nouvelle cellule:
+		VoitureCell newCell = (VoitureCell) malloc(sizeof(*VoitureCell));
+		newCell->previousCell = NULL;
+		newCell->v = voi_creerCopie(voiture);
+		newCell->nextCell = NULL;
+	}
+
+	else if(n == 1)
+	{
+	}
+
+	else
+	{
+	}
 }
 
 void col_supprVoitureSansTri(Collection self, int pos)
