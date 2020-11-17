@@ -100,6 +100,21 @@ Collection col_creerCopie(const_Collection source)
 /*
 void col_detruire(Collection *pself)
 {
+	VoitureCell tmp;
+	VoitureCell pvoit = (*pself)->firstCell;
+
+	while(pvoit)
+	{
+		//sauvegarde de la cellule actuelle
+		tmp = pvoit;
+		//sauvegarde de la prochaine cellule
+		pvoit = pvoit->nextCell;
+		//libère la mémoire de tmp
+		freeVoitureCell(tmp);
+	}
+
+	free(*pself);
+	*pself = NULL;
 }
 */
 
@@ -118,7 +133,7 @@ void col_vider(Collection self)
 		//sauvegarde de la prochaine cellule
 		pvoit = pvoit->nextCell;
 		//libère la mémoire de tmp
-		free(tmp);
+		freeVoitureCell(tmp);
 	}
 	
 	self->firstCell = NULL;
