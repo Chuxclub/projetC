@@ -91,6 +91,24 @@ void col_detruire(Collection *pself)
 
 void col_vider(Collection self)
 {
+	self->len = 0;
+	self->isSorted = true;
+
+	VoitureCell tmp;
+	VoitureCell pvoit = self->firstCell;
+
+	while(pvoit)
+	{
+		//sauvegarde de la cellule actuelle
+		tmp = pvoit;
+		//sauvegarde de la prochaine cellule
+		pvoit = pvoit->nextCell;
+		//libère la mémoire de tmp
+		free(tmp);
+	}
+	
+	self->firstCell = NULL;
+	self->lastCell = NULL;
 }
 
 
@@ -220,6 +238,22 @@ void col_trier(Collection self)
  * -------------*/
 void col_afficher(const_Collection self)
 {
+	VoitureCell pvoit = self->firstCell;
+
+	if (pvoit == NULL) printf("Il n'y a aucune voiture à afficher car la collection est vide\n");
+	else
+	{
+		printf("Collection de %d voiture(s)\n", self->len);
+		//tant que pvoit n'est pas null
+   		while(pvoit)
+   		{
+   			voi_afficher(pvoit->v);
+   			pvoit = pvoit->nextCell;
+   		}
+	}
+
+	if (self->isSorted) printf("isSorted : True\n");
+    else printf("isSorted : False\n");
 }
 
 
