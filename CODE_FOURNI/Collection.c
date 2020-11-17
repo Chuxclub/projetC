@@ -167,7 +167,7 @@ void col_addVoitureAvecTri(Collection self, const_Voiture voiture)
 {
 	assert(self->isSorted);
 	int n = self->len;
-	assert(n > 0);
+	assert(n >= 0);
 
 	if(n == 0)
 	{
@@ -191,7 +191,7 @@ void col_addVoitureAvecTri(Collection self, const_Voiture voiture)
 		int year_v0 = voi_getAnnee(self->firstCell->v);
 		int year_v1 = voi_getAnnee(voiture);
 
-		if(year_v0 <= year_v1)
+		if(year_v1 <= year_v0)
 		{
 			//Branchements des cellules entre elle:
 			newCell->nextCell = self->firstCell;
@@ -226,7 +226,7 @@ void col_addVoitureAvecTri(Collection self, const_Voiture voiture)
 		int year_current_v = voi_getAnnee(currentCell->v);
 		int year_v = voi_getAnnee(voiture);
 		
-		while(year_current_v >= year_v && hasNext(currentCell))
+		while(year_v >= year_current_v && hasNext(currentCell))
 		{
 			currentCell = next(currentCell);
 			year_current_v = voi_getAnnee(currentCell->v);
@@ -273,7 +273,7 @@ void col_supprVoitureSansTri(Collection self, int pos)
 		   {
 			   tmp = tmp->nextCell;
 			   i++;
-			}
+		   }
 
 			//relie la cellule précédente et la suivante
 			previous(tmp)->nextCell = next(tmp);
@@ -300,7 +300,8 @@ void col_afficher(const_Collection self)
 {
 	VoitureCell pvoit = self->firstCell;
 
-	if (pvoit == NULL) printf("Il n'y a aucune voiture à afficher car la collection est vide\n");
+	if (pvoit == NULL) 
+		printf("Il n'y a aucune voiture à afficher car la collection est vide\n");
 	else
 	{
 		printf("Collection de %d voiture(s)\n", self->len);
@@ -312,8 +313,11 @@ void col_afficher(const_Collection self)
    		}
 	}
 
-	if (self->isSorted) printf("isSorted : True\n");
-    else printf("isSorted : False\n");
+	if (self->isSorted) 
+		printf("isSorted : True\n");
+    
+	else 
+		printf("isSorted : False\n");
 }
 
 
