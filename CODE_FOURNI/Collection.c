@@ -43,6 +43,16 @@ VoitureCell createVoitureCell(const_Voiture voiture)
 	return res;
 }
 
+bool hasPrevious(VoitureCell cell)
+{
+	return cell->previousCell != NULL;
+}
+
+bool hasNext(VoitureCell cell)
+{
+	return cell->nextCell != NULL;
+}
+
 
 /* ===================================================================== */
 /* ===================================================================== */
@@ -116,21 +126,57 @@ void col_addVoitureAvecTri(Collection self, const_Voiture voiture)
 
 	if(n == 0)
 	{
-		self->len++;
-		
 		//Création de la nouvelle cellule:
-		VoitureCell newCell = (VoitureCell) malloc(sizeof(*VoitureCell));
-		newCell->previousCell = NULL;
-		newCell->v = voi_creerCopie(voiture);
-		newCell->nextCell = NULL;
+		VoitureCell newCell = createVoitureCell(voiture);
+
+		//Branchements des champs première/dernière cellule
+		//de la structure CollectionP pointée par Collection:
+		self->firstCell = newCell;
+		self->lastCell = newCell;
+
+		//Incrémentation de la taille de la collection:
+		self->len++;
 	}
 
 	else if(n == 1)
 	{
+		//Création de la nouvelle cellule:
+		VoitureCell newCell = createVoitureCell(voiture);
+
+		int year_v0 = voi_getAnnee(self->firstCell->v);
+		int year_v1 = voi_getAnnee(voiture);
+
+		if(year_v0 <= year_v1)
+		{
+			//Branchements des cellules entre elle:
+			newCell->nextCell = self->firstCell;
+			self->firstCell->previousCell = newCell;
+
+			//Branchements des champs:
+			self->firstCell = newCell;
+		}
+
+		else
+		{
+			//Branchements des cellules entre elle:
+			newCell->previousCell = self->firstCell;
+			self->firstCell->nextCell = newCell;
+
+			//Branchements des champs:
+			self->lastCell = newCell;
+		}
+
+
+		//Incrémentation de la taille de la collection:
+		self->len++;
+
 	}
 
 	else
 	{
+
+		//Incrémentation de la taille de la collection:
+		self->len++;
 	}
 }
 
