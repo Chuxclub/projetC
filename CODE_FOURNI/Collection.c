@@ -221,7 +221,6 @@ void col_addVoitureAvecTri(Collection self, const_Voiture voiture)
 			year_current_v = voi_getAnnee(currentCell->v);
 		}
 
-		//Branchement des cellules entre elles
 		if(currentCell == self->firstCell)
 		{
 			newCell->nextCell = self->firstCell;
@@ -231,12 +230,18 @@ void col_addVoitureAvecTri(Collection self, const_Voiture voiture)
 
 		else if(currentCell == self->lastCell)
 		{
-			
+			newCell->previousCell = self->lastCell;
+			self->lastCell->nextCell = newCell;
+			self->lastCell = newCell;
 		}
 
 		else
 		{
-			newCell->nextCell
+			newCell->nextCell = currentCell;
+			newCell->previousCell = currentCell->previousCell;
+
+			currentCell->previousCell->nextCell = newCell;
+			currentCell->previousCell = newCell;
 		}
 
 		//Incrémentation de la taille de la collection:
