@@ -92,10 +92,7 @@ void col_addVoitureSansTri(Collection self, const_Voiture voiture)
 {
 	self->len ++;
 	
-	VoitureCell new = malloc(sizeof(VoitureCell));
-   	new->v = voi_creerCopie(voiture);
-   	new->previousCell = self->lastCell;
-   	new->nextCell = NULL;
+	VoitureCell new = createVoitureCell(voiture);
 	
 	//cas où la collection est vide
 	if (col_getNbVoitures(self) != 0) self->lastCell->nextCell = new;
@@ -152,6 +149,22 @@ void col_trier(Collection self)
  * -------------*/
 void col_afficher(const_Collection self)
 {
+	VoitureCell pvoit = self->firstCell;
+
+	if (pvoit == NULL) printf("Il n'y a aucune voiture à afficher car la collection est vide");
+	else
+	{
+		printf("Collection de %d voiture(s)", self->len);
+		//tant que pvoit n'est pas null
+   		while(pvoit)
+   		{
+   			voi_afficher(pvoit->v);
+   			pvoit = pvoit->nextCell;
+   		}
+	}
+
+	if (self->isSorted) printf("isSorted : True\n");
+    else printf("isSorted : False\n");
 }
 
 
