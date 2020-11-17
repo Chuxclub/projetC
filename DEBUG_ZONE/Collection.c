@@ -98,7 +98,6 @@ Collection col_creerCopie(const_Collection source)
 }
 */
 
-/*
 void col_detruire(Collection *pself)
 {
 	VoitureCell tmp;
@@ -117,7 +116,6 @@ void col_detruire(Collection *pself)
 	free(*pself);
 	*pself = NULL;
 }
-*/
 
 void col_vider(Collection self)
 {

@@ -77,7 +77,7 @@ int main()
     
     //printf("\n============= SUPPRESSIONS ===============\n");
     
-    //col_supprVoitureAvecTri(c1, 0);
+    //col_supprVoitureSansTri(c1, 0);
     //col_afficher(c1);
     
     
@@ -91,9 +91,12 @@ int main()
     voi_afficher(v);
     voi_detruire(&v);
     
-    v = col_getVoiture(c1, 2);
-    voi_afficher(v);
-    voi_detruire(&v);
+    //v = col_getVoiture(c1, 2);
+    //voi_afficher(v);
+    //voi_detruire(&v);
+    
+    col_vider(c1);
+    col_detruire(&c1);
     
 
     return EXIT_SUCCESS;
