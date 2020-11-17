@@ -29,6 +29,29 @@ int main()
             "ZL 313 LZ"
         };
     
+    
+    printf("\n============= SANS TRI ===============\n");
+    
+    v = voi_creer("Orchidile", 2011, 8513, 2, plaques+5);
+    col_addVoitureSansTri(c1, v);
+    voi_detruire(&v);
+    
+    v = voi_creer("Orwelline", 1984, 433813, 1, plaques+7);
+    col_addVoitureSansTri(c1, v);
+    voi_detruire(&v);
+    
+    v = voi_creer("Colectine", 1902, 37, 1, plaques+8);
+    col_addVoitureSansTri(c1, v);
+    voi_detruire(&v);
+    
+    col_afficher(c1);
+    
+    
+    printf("\n============= TRI ===============\n");
+    col_trier(c1);
+    
+    col_afficher(c1);
+    /*
     // ajout de 3 voitures en respectant le tri
     v = voi_creer("Orchidile", 2011, 8513, 2, plaques+5);
     col_addVoitureAvecTri(c1, v);
@@ -47,6 +70,7 @@ int main()
     printf("\n============= SUPPRESSIONS ===============\n");
     col_supprVoitureAvecTri(c1, 0);
     col_afficher(c1);
+    */
 
     return EXIT_SUCCESS;
 }
