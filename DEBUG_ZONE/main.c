@@ -43,6 +43,10 @@ int main()
     voi_detruire(&v);
     
     col_afficher(c1);
+    
+    printf("\n============= SUPPRESSIONS ===============\n");
+    col_supprVoitureAvecTri(c1, 0);
+    col_afficher(c1);
 
     return EXIT_SUCCESS;
 }

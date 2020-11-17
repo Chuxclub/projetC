@@ -100,6 +100,21 @@ Collection col_creerCopie(const_Collection source)
 /*
 void col_detruire(Collection *pself)
 {
+	VoitureCell tmp;
+	VoitureCell pvoit = (*pself)->firstCell;
+
+	while(pvoit)
+	{
+		//sauvegarde de la cellule actuelle
+		tmp = pvoit;
+		//sauvegarde de la prochaine cellule
+		pvoit = pvoit->nextCell;
+		//libère la mémoire de tmp
+		freeVoitureCell(tmp);
+	}
+
+	free(*pself);
+	*pself = NULL;
 }
 */
 
@@ -118,7 +133,7 @@ void col_vider(Collection self)
 		//sauvegarde de la prochaine cellule
 		pvoit = pvoit->nextCell;
 		//libère la mémoire de tmp
-		free(tmp);
+		freeVoitureCell(tmp);
 	}
 	
 	self->firstCell = NULL;
@@ -263,7 +278,9 @@ void col_addVoitureAvecTri(Collection self, const_Voiture voiture)
 void col_supprVoitureSansTri(Collection self, int pos)
 {
 	//on part du principe que la position est toujours strictement positive
-	if ((pos > self->len) || (pos != 0)) printf("Vous ne pouvez rien supprimer");
+	if ((pos > self->len) || (pos != 0)) 
+		printf("Vous ne pouvez rien supprimer");
+
    	else
 	   {
 		   VoitureCell tmp = self->firstCell;
@@ -273,7 +290,7 @@ void col_supprVoitureSansTri(Collection self, int pos)
 		   {
 			   tmp = tmp->nextCell;
 			   i++;
-			}
+		   }
 
 			//relie la cellule précédente et la suivante
 			previous(tmp)->nextCell = next(tmp);
@@ -283,11 +300,61 @@ void col_supprVoitureSansTri(Collection self, int pos)
 	   }
 }
 
-/*
+
 void col_supprVoitureAvecTri(Collection self, int pos)
 {
+	assert(pos >= 0 && pos < self->len);
+	assert(self->len > 0);
+
+	if(self->len == 1)
+	{
+		freeVoitureCell(self->firstCell);
+		self->firstCell = NULL;
+		self->lastCell = NULL;
+	}
+
+	else
+	{
+		VoitureCell currentCell = self->firstCell;
+
+		for(int i = 0; i < pos; i++)
+			currentCell = next(currentCell);
+		
+		if(currentCell == self->firstCell)
+		{
+			VoitureCell nextCell = currentCell->nextCell;
+
+			nextCell->previousCell = NULL;
+			self->firstCell = nextCell;
+
+			freeVoitureCell(currentCell);
+		}
+
+		else if(currentCell == self->lastCell)
+		{
+			VoitureCell previousCell=currentCell->previousCell;
+
+			previousCell->nextCell = NULL;
+			self->lastCell = previousCell;
+
+			freeVoitureCell(currentCell);
+		}
+
+		else
+		{
+			VoitureCell previousCell=currentCell->previousCell;
+			VoitureCell nextCell = currentCell->nextCell;
+
+			previousCell->nextCell = nextCell;
+			nextCell->previousCell = previousCell;
+			freeVoitureCell(currentCell);
+		}
+	}
+
+	self->len--;
 }
 
+/*
 void col_trier(Collection self)
 {
 }
