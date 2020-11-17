@@ -240,6 +240,25 @@ void col_addVoitureAvecTri(Collection self, const_Voiture voiture)
 
 void col_supprVoitureSansTri(Collection self, int pos)
 {
+	//on part du principe que la position est toujours strictement positive
+	if ((pos > self->len) || (pos != 0)) printf("Vous ne pouvez rien supprimer");
+   	else
+	   {
+		   VoitureCell tmp = self->firstCell;
+		   int i = 1;
+		  
+		   while(i != pos)
+		   {
+			   tmp = tmp->nextCell;
+			   i++;
+			}
+
+			//relie la cellule précédente et la suivante
+			previous(tmp)->nextCell = next(tmp);
+			next(tmp)->previousCell = previous(tmp);
+	
+   			free(tmp);
+	   }
 }
 
 void col_supprVoitureAvecTri(Collection self, int pos)
