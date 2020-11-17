@@ -43,6 +43,12 @@ VoitureCell createVoitureCell(const_Voiture voiture)
 	return res;
 }
 
+void freeVoitureCell(VoitureCell cell)
+{
+	voi_detruire(&(cell->v));
+	free(cell);
+}
+
 bool hasPrevious(VoitureCell cell)
 {
 	return cell->previousCell != NULL;
