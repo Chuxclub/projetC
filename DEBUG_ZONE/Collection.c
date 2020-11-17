@@ -204,25 +204,19 @@ void col_addVoitureAvecTri(Collection self, const_Voiture voiture)
 	int n = self->len;
 	assert(n >= 0);
 
+	//Création de la nouvelle cellule:
+	VoitureCell newCell = createVoitureCell(voiture);
+
 	if(n == 0)
 	{
-		//Création de la nouvelle cellule:
-		VoitureCell newCell = createVoitureCell(voiture);
-
 		//Branchements des champs première/dernière cellule
 		//de la structure CollectionP pointée par Collection:
 		self->firstCell = newCell;
 		self->lastCell = newCell;
-
-		//Incrémentation de la taille de la collection:
-		self->len++;
 	}
 
 	else if(n == 1)
 	{
-		//Création de la nouvelle cellule:
-		VoitureCell newCell = createVoitureCell(voiture);
-
 		int year_v0 = voi_getAnnee(self->firstCell->v);
 		int year_v1 = voi_getAnnee(voiture);
 
@@ -245,18 +239,10 @@ void col_addVoitureAvecTri(Collection self, const_Voiture voiture)
 			//Branchements des champs:
 			self->lastCell = newCell;
 		}
-
-
-		//Incrémentation de la taille de la collection:
-		self->len++;
-
 	}
 
 	else
 	{
-		//Création de la nouvelle cellule:
-		VoitureCell newCell = createVoitureCell(voiture);
-
 		VoitureCell currentCell = self->firstCell;
 		int year_current_v = voi_getAnnee(currentCell->v);
 		int year_v = voi_getAnnee(voiture);
@@ -289,10 +275,10 @@ void col_addVoitureAvecTri(Collection self, const_Voiture voiture)
 			currentCell->previousCell->nextCell = newCell;
 			currentCell->previousCell = newCell;
 		}
-
-		//Incrémentation de la taille de la collection:
-		self->len++;
 	}
+
+	//Incrémentation de la taille de la collection:
+	self->len++;
 }
 
 void col_supprVoitureSansTri(Collection self, int pos)
@@ -378,8 +364,11 @@ void col_supprVoitureAvecTri(Collection self, int pos)
 
 void col_trier(Collection self)
 {
+	//On vérifie qu'il y a au moins 
+	//un élément à trier:
 	assert(self->len > 0);
 
+	//On fait un tri à bulle:
 	int list_end = self->len;
 
 	VoitureCell current_cell = NULL;
@@ -406,6 +395,9 @@ void col_trier(Collection self)
 			next_cell = next(next_cell);
 		}
 	}
+
+	//La collection est alors triée:
+	self->isSorted = true;
 }
 
 

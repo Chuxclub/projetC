@@ -31,7 +31,7 @@ int main()
     
     
     
-    printf("\n============= SANS TRI ===============\n");
+    /*printf("\n============= SANS TRI ===============\n");
     
     v = voi_creer("Orchidile", 2011, 8513, 2, plaques+5);
     col_addVoitureSansTri(c1, v);
@@ -51,14 +51,14 @@ int main()
     printf("\n============= TRI ===============\n");
     col_trier(c1);
     
-    col_afficher(c1);
+    col_afficher(c1);*/
     
     
     
     // ajout de 3 voitures en respectant le tri
     
     
-    /*printf("\n============= COL_ADDVOITUREAVECTRI ===============\n");
+    printf("\n============= COL_ADDVOITUREAVECTRI ===============\n");
     
     v = voi_creer("Orchidile", 2011, 8513, 2, plaques+5);
     col_addVoitureAvecTri(c1, v);
@@ -93,7 +93,7 @@ int main()
     
     v = col_getVoiture(c1, 2);
     voi_afficher(v);
-    voi_detruire(&v);*/
+    voi_detruire(&v);
     
 
     return EXIT_SUCCESS;
