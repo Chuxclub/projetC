@@ -2,7 +2,14 @@
  * Module de Collection : corps
  * Auteurs : Amandine Fradet, Florian Legendre
  ********************************************************************/
+#include <stdio.h>
+#include <stdlib.h>
+#include <stdbool.h>
+#include <string.h>
 
+#include "myassert.h"
+
+#include "Collection.h"
 
 struct VoitureCellP
 {
@@ -63,6 +70,22 @@ Voiture col_getVoiture(const_Collection self, int pos)
 
 void col_addVoitureSansTri(Collection self, const_Voiture voiture)
 {
+	self->len ++;
+	
+	VoitureCell new = malloc(sizeof(VoitureCell));
+   	new->v = voi_creerCopie(voiture);
+   	new->previousCell = self->lastCell;
+   	new->nextCell = NULL;
+	
+	//cas où la collection est vide
+	if (col_getNbVoitures(self) != 0) self->lastCell->nextCell = new;
+   	else 
+	   {
+			self->firstCell = new;
+   			self->lastCell = new;
+	   }  
+   
+	self->isSorted = false;
 }
 
 void col_addVoitureAvecTri(Collection self, const_Voiture voiture)
