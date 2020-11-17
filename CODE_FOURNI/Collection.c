@@ -91,9 +91,11 @@ Collection col_creerCopie(const_Collection source)
 	res->isSorted = source->isSorted;
 }
 
+/*
 void col_detruire(Collection *pself)
 {
 }
+*/
 
 void col_vider(Collection self)
 {
@@ -128,9 +130,11 @@ int col_getNbVoitures(const_Collection self)
 	return self->len;
 }
 
+/*
 Voiture col_getVoiture(const_Collection self, int pos)
 {
 }
+*/
 
 void col_addVoitureSansTri(Collection self, const_Voiture voiture)
 {
@@ -273,6 +277,7 @@ void col_supprVoitureSansTri(Collection self, int pos)
 	   }
 }
 
+/*
 void col_supprVoitureAvecTri(Collection self, int pos)
 {
 }
@@ -280,7 +285,7 @@ void col_supprVoitureAvecTri(Collection self, int pos)
 void col_trier(Collection self)
 {
 }
-
+*/
 
 /*--------------*
  * méthode secondaire d'affichage
@@ -310,7 +315,7 @@ void col_afficher(const_Collection self)
  * entrées-sorties fichiers
  * note : le paramètre est un fichier déjà ouvert
  * ------------*/
-
+/*
 void col_ecrireFichier(const_Collection self, FILE* fd)
 {
 }
@@ -318,3 +323,4 @@ void col_ecrireFichier(const_Collection self, FILE* fd)
 void col_lireFichier(Collection self, FILE* fd)
 {
 }
+*/
