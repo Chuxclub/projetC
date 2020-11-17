@@ -53,6 +53,16 @@ bool hasNext(VoitureCell cell)
 	return cell->nextCell != NULL;
 }
 
+VoitureCell next(VoitureCell cell)
+{
+	return cell->nextCell;
+}
+
+VoitureCell previous(VoitureCell cell)
+{
+	return cell->previousCell;
+}
+
 
 /* ===================================================================== */
 /* ===================================================================== */
@@ -102,7 +112,10 @@ void col_addVoitureSansTri(Collection self, const_Voiture voiture)
 {
 	self->len ++;
 	
-	VoitureCell new = createVoitureCell(voiture);
+	VoitureCell new = malloc(sizeof(VoitureCell));
+   	new->v = voi_creerCopie(voiture);
+   	new->previousCell = self->lastCell;
+   	new->nextCell = NULL;
 	
 	//cas où la collection est vide
 	if (col_getNbVoitures(self) != 0) self->lastCell->nextCell = new;
@@ -171,6 +184,18 @@ void col_addVoitureAvecTri(Collection self, const_Voiture voiture)
 
 	else
 	{
+		//Création de la nouvelle cellule:
+		VoitureCell newCell = createVoitureCell(voiture);
+
+		VoitureCell currentCell = self->firstCell;
+		int year_v0 = voi_getAnnee(currentCell->v);
+		int year_v1 = voi_getAnnee(voiture);
+
+		while(year_v0 <= year_v1 && hasNext(currentCell))
+		{
+			currentCell = 
+		}
+
 
 		//Incrémentation de la taille de la collection:
 		self->len++;
@@ -195,22 +220,6 @@ void col_trier(Collection self)
  * -------------*/
 void col_afficher(const_Collection self)
 {
-	VoitureCell pvoit = self->firstCell;
-
-	if (pvoit == NULL) printf("Il n'y a aucune voiture à afficher car la collection est vide");
-	else
-	{
-		printf("Collection de %d voiture(s)", self->len);
-		//tant que pvoit n'est pas null
-   		while(pvoit)
-   		{
-   			voi_afficher(pvoit->v);
-   			pvoit = pvoit->nextCell;
-   		}
-	}
-
-	if (self->isSorted) printf("isSorted : True\n");
-    else printf("isSorted : False\n");
 }
 
 
