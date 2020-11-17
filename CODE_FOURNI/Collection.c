@@ -7,6 +7,7 @@
 #include <stdbool.h>
 #include <string.h>
 
+#include <assert.h>
 #include "myassert.h"
 
 #include "Collection.h"
@@ -35,7 +36,7 @@ struct CollectionP
 
 VoitureCell createVoitureCell(const_Voiture voiture)
 {
-	VoitureCell res = malloc(sizeof(*VoitureCell));
+	VoitureCell res = malloc(sizeof(struct VoitureCellP));
 	res->previousCell = NULL;
    	res->v = voi_creerCopie(voiture);
    	res->nextCell = NULL;
@@ -76,21 +77,26 @@ VoitureCell previous(VoitureCell cell)
 
 Collection col_creer()
 {
-	Collection res = (Collection) malloc(sizeof(*Collection));
+	Collection res = (Collection) malloc(sizeof(struct CollectionP));
 	res->firstCell = NULL;
 	res->len = 0;
 	res->isSorted = true;
 	res->lastCell = NULL;
+
+	return res;
 }
 
+/*
 Collection col_creerCopie(const_Collection source)
 {
 	Collection res = col_creer();
 	
 	res->len = source->len;
 	res->isSorted = source->isSorted;
-}
 
+	return res;
+}
+*/
 /*
 void col_detruire(Collection *pself)
 {

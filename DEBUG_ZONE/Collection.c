@@ -7,6 +7,7 @@
 #include <stdbool.h>
 #include <string.h>
 
+#include <assert.h>
 #include "myassert.h"
 
 #include "Collection.h"
@@ -35,7 +36,7 @@ struct CollectionP
 
 VoitureCell createVoitureCell(const_Voiture voiture)
 {
-	VoitureCell res = malloc(sizeof(*VoitureCell));
+	VoitureCell res = malloc(sizeof(struct VoitureCellP));
 	res->previousCell = NULL;
    	res->v = voi_creerCopie(voiture);
    	res->nextCell = NULL;
@@ -76,24 +77,31 @@ VoitureCell previous(VoitureCell cell)
 
 Collection col_creer()
 {
-	Collection res = (Collection) malloc(sizeof(*Collection));
+	Collection res = (Collection) malloc(sizeof(struct CollectionP));
 	res->firstCell = NULL;
 	res->len = 0;
 	res->isSorted = true;
 	res->lastCell = NULL;
+
+	return res;
 }
 
+/*
 Collection col_creerCopie(const_Collection source)
 {
 	Collection res = col_creer();
 	
 	res->len = source->len;
 	res->isSorted = source->isSorted;
-}
 
+	return res;
+}
+*/
+/*
 void col_detruire(Collection *pself)
 {
 }
+*/
 
 void col_vider(Collection self)
 {
@@ -128,9 +136,11 @@ int col_getNbVoitures(const_Collection self)
 	return self->len;
 }
 
+/*
 Voiture col_getVoiture(const_Collection self, int pos)
 {
 }
+*/
 
 void col_addVoitureSansTri(Collection self, const_Voiture voiture)
 {
@@ -273,6 +283,7 @@ void col_supprVoitureSansTri(Collection self, int pos)
 	   }
 }
 
+/*
 void col_supprVoitureAvecTri(Collection self, int pos)
 {
 }
@@ -280,7 +291,7 @@ void col_supprVoitureAvecTri(Collection self, int pos)
 void col_trier(Collection self)
 {
 }
-
+*/
 
 /*--------------*
  * méthode secondaire d'affichage
@@ -310,7 +321,7 @@ void col_afficher(const_Collection self)
  * entrées-sorties fichiers
  * note : le paramètre est un fichier déjà ouvert
  * ------------*/
-
+/*
 void col_ecrireFichier(const_Collection self, FILE* fd)
 {
 }
@@ -318,3 +329,4 @@ void col_ecrireFichier(const_Collection self, FILE* fd)
 void col_lireFichier(Collection self, FILE* fd)
 {
 }
+*/
