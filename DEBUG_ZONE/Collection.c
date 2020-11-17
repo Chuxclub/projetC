@@ -97,6 +97,7 @@ Collection col_creerCopie(const_Collection source)
 	return res;
 }
 */
+
 /*
 void col_detruire(Collection *pself)
 {
@@ -169,22 +170,27 @@ Voiture col_getVoiture(const_Collection self, int pos)
 
 void col_addVoitureSansTri(Collection self, const_Voiture voiture)
 {
-	self->len ++;
-	
-	VoitureCell new = malloc(sizeof(VoitureCell));
-   	new->v = voi_creerCopie(voiture);
-   	new->previousCell = self->lastCell;
-   	new->nextCell = NULL;
-	
-	//cas où la collection est vide
-	if (col_getNbVoitures(self) != 0) self->lastCell->nextCell = new;
-   	else 
-	   {
-			self->firstCell = new;
-   			self->lastCell = new;
-	   }  
-   
-	self->isSorted = false;
+	//Création de la nouvelle cellule:
+	VoitureCell newCell = createVoitureCell(voiture);
+
+	if(self->len == 0)
+	{
+		//Branchement des champs:
+		self->firstCell = newCell;
+		self->lastCell = newCell;
+	}
+
+	else
+	{
+		//Branchement des cellules entre elles (ajout en queue):
+		self->lastCell->nextCell = newCell;
+		newCell->previousCell = self->lastCell;
+
+		//Branchement du champ (ajout en queue):
+		self->lastCell = newCell;
+	}
+
+	self->len++;
 }
 
 
