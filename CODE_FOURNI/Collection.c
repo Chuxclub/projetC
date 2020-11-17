@@ -170,6 +170,10 @@ Voiture col_getVoiture(const_Collection self, int pos)
 
 void col_addVoitureSansTri(Collection self, const_Voiture voiture)
 {
+	//On pourra toujours ajouter la voiture... 
+	//Et la collection deviendra non triée:
+	self->isSorted = false;
+
 	//Création de la nouvelle cellule:
 	VoitureCell newCell = createVoitureCell(voiture);
 
@@ -374,19 +378,28 @@ void col_supprVoitureAvecTri(Collection self, int pos)
 
 void col_trier(Collection self)
 {
+	//On vérifie qu'il y a au moins 
+	//un élément à trier:
 	assert(self->len > 0);
 
+	//On fait un tri à bulle:
 	int list_end = self->len;
 
-	VoitureCell current_cell = self->firstCell;
-	VoitureCell next_cell = self->firstCell->nextCell;
-	int year_currentV = voi_getAnnee(current_cell->v);
-	int year_nextV = voi_getAnnee(next_cell->v);
+	VoitureCell current_cell = NULL;
+	VoitureCell next_cell = NULL;
+	int year_currentV = 0;
+	int year_nextV = 0;
 
 	for(int i = 0; i < list_end; i++)
 	{
+		current_cell = self->firstCell;
+		next_cell = self->firstCell->nextCell;
+
 		for(int j = 0; j < list_end - 1 - i; j++)
 		{
+			year_currentV = voi_getAnnee(current_cell->v);
+			year_nextV = voi_getAnnee(next_cell->v);
+
 			if(year_currentV > year_nextV)
 			{
 				voi_swap(current_cell->v, next_cell->v);
@@ -394,11 +407,11 @@ void col_trier(Collection self)
 
 			current_cell = next(current_cell);
 			next_cell = next(next_cell);
-
-			year_currentV = voi_getAnnee(current_cell->v);
-			year_nextV = voi_getAnnee(next_cell->v);
 		}
 	}
+
+	//La collection est alors triée:
+	self->isSorted = true;
 }
 
 
