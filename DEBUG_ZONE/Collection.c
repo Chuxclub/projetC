@@ -31,7 +31,7 @@ struct CollectionP
 
 
 /* ===================================================================== */
-/* ======== FONCTIONS SPECIFIQUES A LA LISTE DOUBLEMENT CHAINEE ======== */
+/* ========= FONCTIONS SPECIFIQUES AUX CELLULES DE LA LISTE  =========== */
 /* ===================================================================== */
 
 VoitureCell createVoitureCell(const_Voiture voiture)
@@ -52,12 +52,12 @@ void freeVoitureCell(VoitureCell cell)
 
 bool hasPrevious(VoitureCell cell)
 {
-	return cell->previousCell != NULL;
+	return cell != NULL && cell->previousCell != NULL;
 }
 
 bool hasNext(VoitureCell cell)
 {
-	return cell->nextCell != NULL;
+	return cell != NULL && cell->nextCell != NULL;
 }
 
 VoitureCell next(VoitureCell cell)
@@ -75,6 +75,25 @@ VoitureCell previous(VoitureCell cell)
 /* ===================================================================== */
 /* ===================================================================== */
 
+
+
+
+
+
+
+/* ===================================================================== */
+/* ================== FONCTIONS SPECIFIQUES A LA LISTE ================= */
+/* ===================================================================== */
+
+
+
+
+		/* ------------------------------
+ 		 * Initialisation de la structure
+		 * ------------------------------ */
+
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
 Collection col_creer()
 {
 	Collection res = (Collection) malloc(sizeof(struct CollectionP));
@@ -86,17 +105,50 @@ Collection col_creer()
 	return res;
 }
 
-/*
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
 Collection col_creerCopie(const_Collection source)
 {
-	Collection res = col_creer();
-	
-	res->len = source->len;
-	res->isSorted = source->isSorted;
+	//On vérifie qu'il y a quelque-chose à copier:
+	assert(source->len > 0);
 
+	//On crée la collection qui dans laquelle on 
+	//va copier la collection source:
+	Collection res = col_creer();
+
+	//On a besoin de naviguer dans la collection source: 
+	VoitureCell current_srcCell = source->firstCell;
+
+	//On ne fait pas confiance à la fonction d'ajout sans
+	//tri pour copier notre colonne en gardant le tri:
+	if(source->isSorted)
+	{
+		do
+		{
+			col_addVoitureAvecTri(res, current_srcCell->v);
+			current_srcCell = next(current_srcCell);
+
+		} while(hasNext(current_srcCell));
+	}
+
+	else
+	{
+		do
+		{
+			col_addVoitureSansTri(res, current_srcCell->v);
+			current_srcCell = next(current_srcCell);
+
+		} while(hasNext(current_srcCell));
+
+	}
+	
+	//Finalement, notre collection copiée sera triée ou non
+	//et on peut retourner la copie ainsi faite:
+	res->isSorted = source->isSorted;
 	return res;
 }
-*/
+
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 void col_detruire(Collection *pself)
 {
@@ -116,6 +168,8 @@ void col_detruire(Collection *pself)
 	free(*pself);
 	*pself = NULL;
 }
+
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 void col_vider(Collection self)
 {
@@ -139,17 +193,27 @@ void col_vider(Collection self)
 	self->lastCell = NULL;
 }
 
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 
-/*-----------*
- * accesseurs
- * ----------*/
+
+
+
+				/*-----------*
+ 				 * accesseurs
+				 * ----------*/
+
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 int col_getNbVoitures(const_Collection self)
 {
 	return self->len;
 }
 
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Voiture col_getVoiture(const_Collection self, int pos)
 {
@@ -165,6 +229,10 @@ Voiture col_getVoiture(const_Collection self, int pos)
 	return res;
 }
 
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 void col_addVoitureSansTri(Collection self, const_Voiture voiture)
 {
@@ -195,6 +263,10 @@ void col_addVoitureSansTri(Collection self, const_Voiture voiture)
 	self->len++;
 }
 
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 void col_addVoitureAvecTri(Collection self, const_Voiture voiture)
 {
@@ -279,6 +351,11 @@ void col_addVoitureAvecTri(Collection self, const_Voiture voiture)
 	self->len++;
 }
 
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
 void col_supprVoitureSansTri(Collection self, int pos)
 {
 	//on part du principe que la position est toujours strictement positive
@@ -304,6 +381,10 @@ void col_supprVoitureSansTri(Collection self, int pos)
 	   }
 }
 
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 void col_supprVoitureAvecTri(Collection self, int pos)
 {
@@ -358,7 +439,10 @@ void col_supprVoitureAvecTri(Collection self, int pos)
 	self->len--;
 }
 
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 void col_trier(Collection self)
 {
@@ -398,10 +482,17 @@ void col_trier(Collection self)
 	self->isSorted = true;
 }
 
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-/*--------------*
- * méthode secondaire d'affichage
- * -------------*/
+
+
+
+			/*-------------------------------*
+ 			 * méthode secondaire d'affichage
+ 			 * ------------------------------*/
+
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
 void col_afficher(const_Collection self)
 {
 	VoitureCell pvoit = self->firstCell;
@@ -426,17 +517,37 @@ void col_afficher(const_Collection self)
 		printf("isSorted : False\n");
 }
 
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-/*-------------*
- * entrées-sorties fichiers
- * note : le paramètre est un fichier déjà ouvert
- * ------------*/
+
+
+
+
+		/*-----------------------------------------------*
+ 		 * entrées-sorties fichiers
+ 		 * note : le paramètre est un fichier déjà ouvert
+ 		 * ----------------------------------------------*/
+
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
 /*
 void col_ecrireFichier(const_Collection self, FILE* fd)
 {
 }
 
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
 void col_lireFichier(Collection self, FILE* fd)
 {
 }
 */
+
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+/* ===================================================================== */
+/* ===================================================================== */
+/* ===================================================================== */

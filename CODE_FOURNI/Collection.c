@@ -52,12 +52,12 @@ void freeVoitureCell(VoitureCell cell)
 
 bool hasPrevious(VoitureCell cell)
 {
-	return cell->previousCell != NULL;
+	return cell != NULL && cell->previousCell != NULL;
 }
 
 bool hasNext(VoitureCell cell)
 {
-	return cell->nextCell != NULL;
+	return cell != NULL && cell->nextCell != NULL;
 }
 
 VoitureCell next(VoitureCell cell)
@@ -107,17 +107,46 @@ Collection col_creer()
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-/*
 Collection col_creerCopie(const_Collection source)
 {
-	Collection res = col_creer();
-	
-	res->len = source->len;
-	res->isSorted = source->isSorted;
+	//On vérifie qu'il y a quelque-chose à copier:
+	assert(source->len > 0);
 
+	//On crée la collection qui dans laquelle on 
+	//va copier la collection source:
+	Collection res = col_creer();
+
+	//On a besoin de naviguer dans la collection source: 
+	VoitureCell current_srcCell = source->firstCell;
+
+	//On ne fait pas confiance à la fonction d'ajout sans
+	//tri pour copier notre colonne en gardant le tri:
+	if(source->isSorted)
+	{
+		do
+		{
+			col_addVoitureAvecTri(res, current_srcCell->v);
+			current_srcCell = next(current_srcCell);
+
+		} while(hasNext(current_srcCell));
+	}
+
+	else
+	{
+		do
+		{
+			col_addVoitureSansTri(res, current_srcCell->v);
+			current_srcCell = next(current_srcCell);
+
+		} while(hasNext(current_srcCell));
+
+	}
+	
+	//Finalement, notre collection copiée sera triée ou non
+	//et on peut retourner la copie ainsi faite:
+	res->isSorted = source->isSorted;
 	return res;
 }
-*/
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 

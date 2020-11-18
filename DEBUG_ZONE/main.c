@@ -95,8 +95,15 @@ int main()
     //voi_afficher(v);
     //voi_detruire(&v);
     
+    
+    printf("\n============= COL_CREERCOPIE ===============\n");
+    
+    Collection c2 = col_creerCopie(c1);
+    col_afficher(c2);
+    
     col_vider(c1);
     col_detruire(&c1);
+    col_detruire(&c2);
     
 
     return EXIT_SUCCESS;
