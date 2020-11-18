@@ -36,7 +36,7 @@ struct CollectionP
 
 VoitureCell createVoitureCell(const_Voiture voiture)
 {
-	VoitureCell res = malloc(sizeof(struct VoitureCellP));
+	VoitureCell res = (VoitureCell) malloc(sizeof(struct VoitureCellP));
 	res->previousCell = NULL;
    	res->v = voi_creerCopie(voiture);
    	res->nextCell = NULL;
@@ -358,7 +358,8 @@ void col_addVoitureAvecTri(Collection self, const_Voiture voiture)
 
 void col_supprVoitureSansTri(Collection self, int pos)
 {
-	//on part du principe que la position est toujours strictement positive
+	//On part du principe que la position est toujours strictement 
+	//positive:
 	if ((pos > self->len) || (pos != 0)) 
 		printf("Vous ne pouvez rien supprimer");
 
@@ -373,7 +374,7 @@ void col_supprVoitureSansTri(Collection self, int pos)
 			   i++;
 		   }
 
-			//relie la cellule précédente et la suivante
+			//Relie la cellule précédente et la suivante:
 			previous(tmp)->nextCell = next(tmp);
 			next(tmp)->previousCell = previous(tmp);
 	
@@ -567,12 +568,22 @@ void col_lireFichier(Collection self, FILE* fd)
 	//paramètres évoqués précédemment. self->len est 
 	//incrémenté dans col_addVoiture avec ou sans tri:
 	
-	//Fausse encore les statistiques d'une initialisation
-	//en trop ici (cf. on doit d'ailleurs détruire après
-	//tout en bas...):
-	Voiture current_v = voi_creerFromFichier(fd);
-	col_addVoitureAvecTri(self, current_v);
 
+	Voiture current_v = voi_creerFromFichier(fd);
+	
+	//On doit créer notre première cellule en-dehors de
+	//col_addVoiture si on veut éviter de fausser les statistiques
+	//par une copie excédante:
+	VoitureCell newCell = (VoitureCell) malloc(sizeof(struct VoitureCellP));
+	newCell->previousCell = NULL;
+	newCell->v = current_v;
+	newCell->nextCell = NULL;
+
+	self->firstCell = newCell;
+	self->lastCell = newCell;
+	self->len++;
+	
+	//On peut maintenant copier avec col_addVoiture sans problème:
 	if(self->isSorted)
 	{
 		for(int i = 1; i < n; i++)
@@ -590,8 +601,6 @@ void col_lireFichier(Collection self, FILE* fd)
 			col_addVoitureSansTri(self, current_v);
 		}
 	}
-
-	voi_detruire(&current_v);
 }
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
