@@ -533,6 +533,17 @@ void col_afficher(const_Collection self)
 
 void col_ecrireFichier(const_Collection self, FILE* fd)
 {
+	fwrite(&(self->isSorted), sizeof(bool), 1, fd);
+	fwrite(&(self->len), sizeof(int), 1, fd);
+
+	VoitureCell currentCell = self->firstCell;
+
+	for(int i = 0; i < self->len; i++)
+	{
+		voi_ecrireFichier(currentCell->v, fd);
+		currentCell = next(currentCell);
+	}
+
 	return;
 }
 
