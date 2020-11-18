@@ -52,12 +52,12 @@ void freeVoitureCell(VoitureCell cell)
 
 bool hasPrevious(VoitureCell cell)
 {
-	return cell != NULL && cell->previousCell != NULL;
+	return cell->previousCell != NULL;
 }
 
 bool hasNext(VoitureCell cell)
 {
-	return cell != NULL && cell->nextCell != NULL;
+	return cell->nextCell != NULL;
 }
 
 VoitureCell next(VoitureCell cell)
@@ -128,7 +128,7 @@ Collection col_creerCopie(const_Collection source)
 			col_addVoitureAvecTri(res, current_srcCell->v);
 			current_srcCell = next(current_srcCell);
 
-		} while(hasNext(current_srcCell));
+		} while(current_srcCell != NULL);
 	}
 
 	else
@@ -138,7 +138,7 @@ Collection col_creerCopie(const_Collection source)
 			col_addVoitureSansTri(res, current_srcCell->v);
 			current_srcCell = next(current_srcCell);
 
-		} while(hasNext(current_srcCell));
+		} while(current_srcCell != NULL);
 
 	}
 	
@@ -530,9 +530,10 @@ void col_afficher(const_Collection self)
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-/*
+
 void col_ecrireFichier(const_Collection self, FILE* fd)
 {
+	return;
 }
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -542,8 +543,8 @@ void col_ecrireFichier(const_Collection self, FILE* fd)
 
 void col_lireFichier(Collection self, FILE* fd)
 {
+	return;
 }
-*/
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
