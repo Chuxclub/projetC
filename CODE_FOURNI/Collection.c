@@ -543,8 +543,6 @@ void col_ecrireFichier(const_Collection self, FILE* fd)
 		voi_ecrireFichier(currentCell->v, fd);
 		currentCell = next(currentCell);
 	}
-
-	return;
 }
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -554,7 +552,41 @@ void col_ecrireFichier(const_Collection self, FILE* fd)
 
 void col_lireFichier(Collection self, FILE* fd)
 {
-	return;
+	//On vide la collection pour ne laisser
+	//que ce qu'on veut copier:
+	col_vider(self);
+
+	//On récupère deux informations essentielles:
+	//Le nombre 'n' de voitures dans le fichier
+	//et si la collection est supposée être triée!
+	int n = 0;
+	fread(&(self->isSorted), sizeof(bool), 1, fd);
+	fread(&n, sizeof(int), 1, fd);
+
+	//On récupère les voitures du fichier selon ces deux
+	//paramètres évoqués précédemment. self->len est 
+	//incrémenté dans col_addVoiture avec ou sans tri:
+	Voiture current_v = NULL;
+
+	if(self->isSorted)
+	{
+		for(int i = 0; i < n; i++)
+		{
+			current_v = voi_creerFromFichier(fd);
+			col_addVoitureAvecTri(self, current_v);
+			voi_detruire(&current_v);
+		}
+	}
+
+	else
+	{
+		for(int i = 0; i < n; i++)
+		{
+			current_v = voi_creerFromFichier(fd);
+			col_addVoitureSansTri(self, current_v);
+			voi_detruire(&current_v);
+		}
+	}
 }
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
