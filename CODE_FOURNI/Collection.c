@@ -358,28 +358,65 @@ void col_addVoitureAvecTri(Collection self, const_Voiture voiture)
 
 void col_supprVoitureSansTri(Collection self, int pos)
 {
-	//On part du principe que la position est toujours strictement 
-	//positive:
-	if ((pos > self->len) || (pos != 0)) 
-		printf("Vous ne pouvez rien supprimer");
+	//Vérification de la position et de la présence de quelque chose à supprimer:
+	myassert((pos >= 0 && pos < self->len), "La position entrée n'est pas correcte");
+	myassert((self->len > 0), "Il n'y a rien à supprimer");
 
-   	else
-	   {
-		   VoitureCell tmp = self->firstCell;
-		   int i = 1;
-		  
-		   while(i != pos)
-		   {
-			   tmp = tmp->nextCell;
-			   i++;
-		   }
+	//Première et unique cellule sélectionnée:
+	if(self->len == 1)
+	{
+		col_vider(self);
+	}
 
-			//Relie la cellule précédente et la suivante:
-			previous(tmp)->nextCell = next(tmp);
-			next(tmp)->previousCell = previous(tmp);
-	
-   			free(tmp);
-	   }
+	else
+	{
+		VoitureCell currentCell = self->firstCell;
+		int i = 1;
+
+		//Déplacement dans la collection:
+		while(i != pos)
+		{
+			currentCell = next(currentCell);
+			i++;
+		}
+		
+		//Première cellule:
+		if(currentCell == self->firstCell)
+		{
+			VoitureCell nextCell = currentCell->nextCell;
+
+			nextCell->previousCell = NULL;
+			self->firstCell = nextCell;
+
+			freeVoitureCell(currentCell);
+		}
+
+		//Dernière cellule:
+		else if(currentCell == self->lastCell)
+		{
+			VoitureCell previousCell=currentCell->previousCell;
+
+			previousCell->nextCell = NULL;
+			self->lastCell = previousCell;
+
+			freeVoitureCell(currentCell);
+		}
+
+		//N'importe quelle autre cellule:
+		else
+		{
+			VoitureCell previousCell=currentCell->previousCell;
+			VoitureCell nextCell = currentCell->nextCell;
+
+			//Relie la cellule précédente et suivante:
+			previousCell->nextCell = nextCell;
+			nextCell->previousCell = previousCell;
+			freeVoitureCell(currentCell);
+		}
+	}
+
+	self->len--;
+	   
 }
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
