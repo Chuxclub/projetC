@@ -572,6 +572,8 @@ void col_lireFichier(Collection self, FILE* fd)
 	{
 		for(int i = 0; i < n; i++)
 		{
+			//Fonctionne mais fausse les statistiques
+			//par rapport au nombre d'initialisation...
 			current_v = voi_creerFromFichier(fd);
 			col_addVoitureAvecTri(self, current_v);
 			voi_detruire(&current_v);
