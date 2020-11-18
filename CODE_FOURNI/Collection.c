@@ -566,29 +566,32 @@ void col_lireFichier(Collection self, FILE* fd)
 	//On récupère les voitures du fichier selon ces deux
 	//paramètres évoqués précédemment. self->len est 
 	//incrémenté dans col_addVoiture avec ou sans tri:
-	Voiture current_v = NULL;
+	
+	//Fausse encore les statistiques d'une initialisation
+	//en trop ici (cf. on doit d'ailleurs détruire après
+	//tout en bas...):
+	Voiture current_v = voi_creerFromFichier(fd);
+	col_addVoitureAvecTri(self, current_v);
 
 	if(self->isSorted)
 	{
-		for(int i = 0; i < n; i++)
+		for(int i = 1; i < n; i++)
 		{
-			//Fonctionne mais fausse les statistiques
-			//par rapport au nombre d'initialisation...
-			current_v = voi_creerFromFichier(fd);
+			voi_lireFichier(current_v, fd);
 			col_addVoitureAvecTri(self, current_v);
-			voi_detruire(&current_v);
 		}
 	}
 
 	else
 	{
-		for(int i = 0; i < n; i++)
+		for(int i = 1; i < n; i++)
 		{
-			current_v = voi_creerFromFichier(fd);
+			voi_lireFichier(current_v, fd);
 			col_addVoitureSansTri(self, current_v);
-			voi_detruire(&current_v);
 		}
 	}
+
+	voi_detruire(&current_v);
 }
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
