@@ -236,9 +236,8 @@ Voiture col_getVoiture(const_Collection self, int pos)
 
 void col_addVoitureSansTri(Collection self, const_Voiture voiture)
 {
-	//On pourra toujours ajouter la voiture... 
-	//Et la collection deviendra non triée:
-	self->isSorted = false;
+	//On pourra toujours ajouter la voiture...
+	//Donc pas d'assert! 
 
 	//Création de la nouvelle cellule:
 	VoitureCell newCell = createVoitureCell(voiture);
@@ -258,6 +257,10 @@ void col_addVoitureSansTri(Collection self, const_Voiture voiture)
 
 		//Branchement du champ (ajout en queue):
 		self->lastCell = newCell;
+		
+		//La collection devient non triée contrairement au cas
+		//où il n'y avait initialement pas d'élément:
+		self->isSorted = false;
 	}
 
 	self->len++;
