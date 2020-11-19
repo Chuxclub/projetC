@@ -608,19 +608,6 @@ void col_lireFichier(Collection self, FILE* fd)
 
 	Voiture current_v = voi_creerFromFichier(fd);
 	
-	//On doit créer notre première cellule en-dehors de
-	//col_addVoiture si on veut éviter de fausser les statistiques
-	//par une copie excédante:
-	
-	/*VoitureCell newCell = (VoitureCell) malloc(sizeof(struct VoitureCellP));
-	newCell->previousCell = NULL;
-	newCell->v = current_v;
-	newCell->nextCell = NULL;
-
-	self->firstCell = newCell;
-	self->lastCell = newCell;
-	self->len++;*/
-
 	//On peut maintenant copier avec col_addVoiture sans problème:
 	if(self->isSorted)
 	{
