@@ -374,13 +374,11 @@ void col_supprVoitureSansTri(Collection self, int pos)
 	else
 	{
 		VoitureCell currentCell = self->firstCell;
-		int i = 1;
 
 		//Déplacement dans la collection:
-		while(i != pos)
+		for(int i = 0; i < pos; i++)
 		{
 			currentCell = next(currentCell);
-			i++;
 		}
 		
 		//Première cellule:
