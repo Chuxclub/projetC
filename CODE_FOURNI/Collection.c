@@ -352,8 +352,6 @@ void col_addVoitureAvecTri(Collection self, const_Voiture voiture)
 
 	//Incrémentation de la taille de la collection:
 	self->len++;
-
-	col_afficher(self);
 }
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -607,11 +605,13 @@ void col_lireFichier(Collection self, FILE* fd)
 	//incrémenté dans col_addVoiture avec ou sans tri:
 
 	Voiture current_v = voi_creerFromFichier(fd);
-	
+
 	//On peut maintenant copier avec col_addVoiture sans problème:
 	if(self->isSorted)
 	{
-		for(int i = 0; i < n; i++)
+		col_addVoitureAvecTri(self, current_v);
+
+		for(int i = 1; i < n; i++)
 		{
 			voi_lireFichier(current_v, fd);
 			col_addVoitureAvecTri(self, current_v);
@@ -621,7 +621,9 @@ void col_lireFichier(Collection self, FILE* fd)
 	
 	else
 	{
-		for(int i = 0; i < n; i++)
+		col_addVoitureSansTri(self, current_v);
+
+		for(int i = 1; i < n; i++)
 		{
 			voi_lireFichier(current_v, fd);
 			col_addVoitureSansTri(self, current_v);
