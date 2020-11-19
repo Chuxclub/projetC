@@ -536,10 +536,8 @@ void col_afficher(const_Collection self)
 {
 	VoitureCell pvoit = self->firstCell;
 
-	if (pvoit == NULL) 
-		printf("Il n'y a aucune voiture à afficher car la collection est vide\n");
-	else
-	{
+	myassert(pvoit != NULL, "Il n'y a aucune voiture à afficher car la collection est vide\n");
+	
 		printf("Collection de %d voiture(s)\n", self->len);
 		//tant que pvoit n'est pas null
    		while(pvoit)
@@ -547,8 +545,7 @@ void col_afficher(const_Collection self)
    			voi_afficher(pvoit->v);
    			pvoit = pvoit->nextCell;
    		}
-	}
-
+	
 	if (self->isSorted) 
 		printf("isSorted : True\n");
     
