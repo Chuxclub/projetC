@@ -264,8 +264,6 @@ void col_addVoitureSansTri(Collection self, const_Voiture voiture)
 	}
 
 	self->len++;
-
-	col_afficher(self);
 }
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -540,7 +538,7 @@ void col_afficher(const_Collection self)
 {
 	VoitureCell pvoit = self->firstCell;
 
-	myassert(pvoit != NULL, "Il n'y a aucune voiture à afficher car la collection est vide\n");
+	//myassert(pvoit != NULL, "Il n'y a aucune voiture à afficher car la collection est vide\n");
 	
 		printf("Collection de %d voiture(s)\n", self->len);
 		//tant que pvoit n'est pas null
@@ -613,36 +611,37 @@ void col_lireFichier(Collection self, FILE* fd)
 	//On doit créer notre première cellule en-dehors de
 	//col_addVoiture si on veut éviter de fausser les statistiques
 	//par une copie excédante:
-	VoitureCell newCell = (VoitureCell) malloc(sizeof(struct VoitureCellP));
+	
+	/*VoitureCell newCell = (VoitureCell) malloc(sizeof(struct VoitureCellP));
 	newCell->previousCell = NULL;
 	newCell->v = current_v;
 	newCell->nextCell = NULL;
 
 	self->firstCell = newCell;
 	self->lastCell = newCell;
-	self->len++;
+	self->len++;*/
 
-	col_afficher(self);
-	
 	//On peut maintenant copier avec col_addVoiture sans problème:
-	/*if(self->isSorted)
+	if(self->isSorted)
 	{
-		for(int i = 1; i < n; i++)
+		for(int i = 0; i < n; i++)
 		{
 			voi_lireFichier(current_v, fd);
 			col_addVoitureAvecTri(self, current_v);
 		}
-	}*/
+	}
 
 	
-	//else
-	//{
-		for(int i = 1; i < n; i++)
+	else
+	{
+		for(int i = 0; i < n; i++)
 		{
 			voi_lireFichier(current_v, fd);
 			col_addVoitureSansTri(self, current_v);
 		}
-	//}
+	}
+
+	voi_detruire(&current_v);
 }
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
