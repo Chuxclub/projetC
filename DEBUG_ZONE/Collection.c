@@ -36,7 +36,7 @@ struct CollectionP
 
 VoitureCell createVoitureCell(const_Voiture voiture)
 {
-	VoitureCell res = malloc(sizeof(struct VoitureCellP));
+	VoitureCell res = (VoitureCell) malloc(sizeof(struct VoitureCellP));
 	res->previousCell = NULL;
    	res->v = voi_creerCopie(voiture);
    	res->nextCell = NULL;
@@ -236,9 +236,8 @@ Voiture col_getVoiture(const_Collection self, int pos)
 
 void col_addVoitureSansTri(Collection self, const_Voiture voiture)
 {
-	//On pourra toujours ajouter la voiture... 
-	//Et la collection deviendra non triée:
-	self->isSorted = false;
+	//On pourra toujours ajouter la voiture...
+	//Donc pas d'assert! 
 
 	//Création de la nouvelle cellule:
 	VoitureCell newCell = createVoitureCell(voiture);
@@ -258,6 +257,10 @@ void col_addVoitureSansTri(Collection self, const_Voiture voiture)
 
 		//Branchement du champ (ajout en queue):
 		self->lastCell = newCell;
+		
+		//La collection devient non triée contrairement au cas
+		//où il n'y avait initialement pas d'élément:
+		self->isSorted = false;
 	}
 
 	self->len++;
@@ -287,10 +290,10 @@ void col_addVoitureAvecTri(Collection self, const_Voiture voiture)
 
 	else if(n == 1)
 	{
-		int year_v0 = voi_getAnnee(self->firstCell->v);
-		int year_v1 = voi_getAnnee(voiture);
+		int year_vInCol = voi_getAnnee(self->firstCell->v);
+		int year_vToAdd = voi_getAnnee(voiture);
 
-		if(year_v1 <= year_v0)
+		if(year_vToAdd <= year_vInCol)
 		{
 			//Branchements des cellules entre elle:
 			newCell->nextCell = self->firstCell;
@@ -323,6 +326,7 @@ void col_addVoitureAvecTri(Collection self, const_Voiture voiture)
 			year_current_v = voi_getAnnee(currentCell->v);
 		}
 
+
 		if(currentCell == self->firstCell)
 		{
 			newCell->nextCell = self->firstCell;
@@ -330,7 +334,17 @@ void col_addVoitureAvecTri(Collection self, const_Voiture voiture)
 			self->firstCell = newCell;
 		}
 
-		else if(currentCell == self->lastCell)
+		else if(currentCell == self->lastCell && year_v < year_current_v)
+		{
+			VoitureCell beforeLastCell = self->lastCell->previousCell;
+			
+			beforeLastCell->nextCell = newCell;
+			newCell->previousCell = beforeLastCell;
+			newCell->nextCell = self->lastCell;
+			beforeLastCell = newCell;
+		}
+
+		else if(currentCell == self->lastCell && year_v >= year_current_v)
 		{
 			newCell->previousCell = self->lastCell;
 			self->lastCell->nextCell = newCell;
@@ -358,27 +372,63 @@ void col_addVoitureAvecTri(Collection self, const_Voiture voiture)
 
 void col_supprVoitureSansTri(Collection self, int pos)
 {
-	//on part du principe que la position est toujours strictement positive
-	if ((pos > self->len) || (pos != 0)) 
-		printf("Vous ne pouvez rien supprimer");
+	//Vérification de la position et de la présence de quelque chose à supprimer:
+	myassert((pos >= 0 && pos < self->len), "La position entrée n'est pas correcte");
+	myassert((self->len > 0), "Il n'y a rien à supprimer");
 
-   	else
-	   {
-		   VoitureCell tmp = self->firstCell;
-		   int i = 1;
-		  
-		   while(i != pos)
-		   {
-			   tmp = tmp->nextCell;
-			   i++;
-		   }
+	//Première et unique cellule sélectionnée:
+	if(self->len == 1)
+	{
+		col_vider(self);
+	}
 
-			//relie la cellule précédente et la suivante
-			previous(tmp)->nextCell = next(tmp);
-			next(tmp)->previousCell = previous(tmp);
-	
-   			free(tmp);
-	   }
+	else
+	{
+		VoitureCell currentCell = self->firstCell;
+
+		//Déplacement dans la collection:
+		for(int i = 0; i < pos; i++)
+		{
+			currentCell = next(currentCell);
+		}
+		
+		//Première cellule:
+		if(currentCell == self->firstCell)
+		{
+			VoitureCell nextCell = currentCell->nextCell;
+
+			nextCell->previousCell = NULL;
+			self->firstCell = nextCell;
+
+			freeVoitureCell(currentCell);
+		}
+
+		//Dernière cellule:
+		else if(currentCell == self->lastCell)
+		{
+			VoitureCell previousCell=currentCell->previousCell;
+
+			previousCell->nextCell = NULL;
+			self->lastCell = previousCell;
+
+			freeVoitureCell(currentCell);
+		}
+
+		//N'importe quelle autre cellule:
+		else
+		{
+			VoitureCell previousCell=currentCell->previousCell;
+			VoitureCell nextCell = currentCell->nextCell;
+
+			//Relie la cellule précédente et suivante:
+			previousCell->nextCell = nextCell;
+			nextCell->previousCell = previousCell;
+			freeVoitureCell(currentCell);
+		}
+	}
+
+	self->len--;
+	   
 }
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -497,10 +547,8 @@ void col_afficher(const_Collection self)
 {
 	VoitureCell pvoit = self->firstCell;
 
-	if (pvoit == NULL) 
-		printf("Il n'y a aucune voiture à afficher car la collection est vide\n");
-	else
-	{
+	//myassert(pvoit != NULL, "Il n'y a aucune voiture à afficher car la collection est vide\n");
+	
 		printf("Collection de %d voiture(s)\n", self->len);
 		//tant que pvoit n'est pas null
    		while(pvoit)
@@ -508,8 +556,7 @@ void col_afficher(const_Collection self)
    			voi_afficher(pvoit->v);
    			pvoit = pvoit->nextCell;
    		}
-	}
-
+	
 	if (self->isSorted) 
 		printf("isSorted : True\n");
     
@@ -533,7 +580,16 @@ void col_afficher(const_Collection self)
 
 void col_ecrireFichier(const_Collection self, FILE* fd)
 {
-	return;
+	fwrite(&(self->isSorted), sizeof(bool), 1, fd);
+	fwrite(&(self->len), sizeof(int), 1, fd);
+
+	VoitureCell currentCell = self->firstCell;
+
+	for(int i = 0; i < self->len; i++)
+	{
+		voi_ecrireFichier(currentCell->v, fd);
+		currentCell = next(currentCell);
+	}
 }
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -543,7 +599,49 @@ void col_ecrireFichier(const_Collection self, FILE* fd)
 
 void col_lireFichier(Collection self, FILE* fd)
 {
-	return;
+	//On vide la collection pour ne laisser
+	//que ce qu'on veut copier:
+	col_vider(self);
+
+	//On récupère deux informations essentielles:
+	//Le nombre 'n' de voitures dans le fichier
+	//et si la collection est supposée être triée!
+	fread(&(self->isSorted), sizeof(bool), 1, fd);
+
+	int n = 0;
+	fread(&n, sizeof(int), 1, fd);
+
+	//On récupère les voitures du fichier selon ces deux
+	//paramètres évoqués précédemment. self->len est 
+	//incrémenté dans col_addVoiture avec ou sans tri:
+
+	Voiture current_v = voi_creerFromFichier(fd);
+
+	//On peut maintenant copier avec col_addVoiture sans problème:
+	if(self->isSorted)
+	{
+		col_addVoitureAvecTri(self, current_v);
+
+		for(int i = 1; i < n; i++)
+		{
+			voi_lireFichier(current_v, fd);
+			col_addVoitureAvecTri(self, current_v);
+		}
+	}
+
+	
+	else
+	{
+		col_addVoitureSansTri(self, current_v);
+
+		for(int i = 1; i < n; i++)
+		{
+			voi_lireFichier(current_v, fd);
+			col_addVoitureSansTri(self, current_v);
+		}
+	}
+
+	voi_detruire(&current_v);
 }
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

@@ -290,10 +290,10 @@ void col_addVoitureAvecTri(Collection self, const_Voiture voiture)
 
 	else if(n == 1)
 	{
-		int year_v0 = voi_getAnnee(self->firstCell->v);
-		int year_v1 = voi_getAnnee(voiture);
+		int year_vInCol = voi_getAnnee(self->firstCell->v);
+		int year_vToAdd = voi_getAnnee(voiture);
 
-		if(year_v1 <= year_v0)
+		if(year_vToAdd <= year_vInCol)
 		{
 			//Branchements des cellules entre elle:
 			newCell->nextCell = self->firstCell;
@@ -326,6 +326,11 @@ void col_addVoitureAvecTri(Collection self, const_Voiture voiture)
 			year_current_v = voi_getAnnee(currentCell->v);
 		}
 
+		//Si l'année du véhicule qu'on veut ajouter "year_v" est plus
+		//petite que l'année du premier véhicule de la collection alors
+		//on n'entre même pas dans la boucle while. La cellule courante
+		//est donc la première cellule de notre collection et on fait 
+		//les branchements appropriés:
 		if(currentCell == self->firstCell)
 		{
 			newCell->nextCell = self->firstCell;
@@ -333,13 +338,36 @@ void col_addVoitureAvecTri(Collection self, const_Voiture voiture)
 			self->firstCell = newCell;
 		}
 
-		else if(currentCell == self->lastCell)
+		//Si on arrive en bout de collection il y a deux cas de figure...
+		//Premier cas: la boucle while s'est arrêtée car l'année du 
+		//véhicule qu'on veut ajouter est plus petite que 
+		//l'année du véhicule en dernière position. 
+		//On doit alors faire des branchements spécifiques:
+		else if(currentCell == self->lastCell && year_v < year_current_v)
+		{
+			VoitureCell beforeLastCell = self->lastCell->previousCell;
+
+			beforeLastCell->nextCell = newCell;
+			newCell->previousCell = beforeLastCell;
+			newCell->nextCell = self->lastCell;
+			beforeLastCell = newCell;
+		}
+
+		//Second cas: la boucle s'est arrêtée non pas parce que l'année 
+		//était plus petite mais parce que le hasNext() est faux 
+		//(en effet on est en bout de liste). 
+		//Là encore des branchements spécifiques s'imposent:
+		else if(currentCell == self->lastCell && year_v >= year_current_v)
 		{
 			newCell->previousCell = self->lastCell;
 			self->lastCell->nextCell = newCell;
 			self->lastCell = newCell;
 		}
 
+		//Enfin, si aucun des cas ci-dessus n'est rencontré nous sommes 
+		//dans le cas général où une cellule contenant une voiture est 
+		//ajoutée quelque-part dans la collection qui ne soit pas 
+		//aux extrémités:
 		else
 		{
 			newCell->nextCell = currentCell;
@@ -536,21 +564,22 @@ void col_afficher(const_Collection self)
 {
 	VoitureCell pvoit = self->firstCell;
 
-	//myassert(pvoit != NULL, "Il n'y a aucune voiture à afficher car la collection est vide\n");
-	
-		printf("Collection de %d voiture(s)\n", self->len);
-		//tant que pvoit n'est pas null
-   		while(pvoit)
-   		{
-   			voi_afficher(pvoit->v);
-   			pvoit = pvoit->nextCell;
-   		}
+	printf("Collection: \n");
+	printf("Il y a %d voiture(s)\n", self->len);
 	
 	if (self->isSorted) 
-		printf("isSorted : True\n");
+		printf("La collection est triée\n");
     
 	else 
-		printf("isSorted : False\n");
+		printf("La collection n'est pas considérée comme triée\n");
+
+
+	//tant que pvoit n'est pas null
+   	while(pvoit)
+   	{
+   		voi_afficher(pvoit->v);
+   		pvoit = pvoit->nextCell;
+   	}
 }
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -630,6 +659,8 @@ void col_lireFichier(Collection self, FILE* fd)
 		}
 	}
 
+	//On libère la zone mémoire de notre voiture 
+	//current_v qu'on a allouée avec voi_creerFromFichier():
 	voi_detruire(&current_v);
 }
 

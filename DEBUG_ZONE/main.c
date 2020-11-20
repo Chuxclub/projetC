@@ -72,6 +72,10 @@ int main()
     col_addVoitureAvecTri(c1, v);
     voi_detruire(&v);
     
+    v = voi_creer("Honda", 2000, 156, 1, plaques+2);
+    col_addVoitureAvecTri(c1, v);
+    voi_detruire(&v);
+    
     col_afficher(c1);
     
     
@@ -81,7 +85,7 @@ int main()
     //col_afficher(c1);
     
     
-    printf("\n============= COL_GETVOITURE ===============\n");
+    /*printf("\n============= COL_GETVOITURE ===============\n");
     
     v = col_getVoiture(c1, 0);
     voi_afficher(v);
@@ -103,7 +107,7 @@ int main()
     
     col_vider(c1);
     col_detruire(&c1);
-    col_detruire(&c2);
+    col_detruire(&c2);*/
     
 
     return EXIT_SUCCESS;
