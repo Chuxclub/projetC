@@ -319,40 +319,33 @@ void col_addVoitureAvecTri(Collection self, const_Voiture voiture)
 		VoitureCell currentCell = self->firstCell;
 		int year_current_v = voi_getAnnee(currentCell->v);
 		int year_v = voi_getAnnee(voiture);
-		
-		while(year_v >= year_current_v && hasNext(currentCell))
-		{
-			currentCell = next(currentCell);
-			year_current_v = voi_getAnnee(currentCell->v);
-		}
 
-
-		if(currentCell == self->firstCell)
+		//v' < v1:
+		if(year_v < voi_getAnnee(self->firstCell->v))
 		{
 			newCell->nextCell = self->firstCell;
 			self->firstCell->previousCell = newCell;
 			self->firstCell = newCell;
 		}
 
-		else if(currentCell == self->lastCell && year_v < year_current_v)
-		{
-			VoitureCell beforeLastCell = self->lastCell->previousCell;
-			
-			beforeLastCell->nextCell = newCell;
-			newCell->previousCell = beforeLastCell;
-			newCell->nextCell = self->lastCell;
-			beforeLastCell = newCell;
-		}
-
-		else if(currentCell == self->lastCell && year_v >= year_current_v)
+		//v' >= vn:
+		else if(year_v >= voi_getAnnee(self->lastCell->v))
 		{
 			newCell->previousCell = self->lastCell;
 			self->lastCell->nextCell = newCell;
 			self->lastCell = newCell;
+
 		}
 
+		//v1 <= v' < vn:
 		else
 		{
+			while(year_v >= year_current_v)
+			{
+				currentCell = next(currentCell);
+				year_current_v = voi_getAnnee(currentCell->v);
+			}
+
 			newCell->nextCell = currentCell;
 			newCell->previousCell = currentCell->previousCell;
 
@@ -547,21 +540,22 @@ void col_afficher(const_Collection self)
 {
 	VoitureCell pvoit = self->firstCell;
 
-	//myassert(pvoit != NULL, "Il n'y a aucune voiture à afficher car la collection est vide\n");
-	
-		printf("Collection de %d voiture(s)\n", self->len);
-		//tant que pvoit n'est pas null
-   		while(pvoit)
-   		{
-   			voi_afficher(pvoit->v);
-   			pvoit = pvoit->nextCell;
-   		}
+	printf("Collection: \n");
+	printf("Il y a %d voiture(s)\n", self->len);
 	
 	if (self->isSorted) 
-		printf("isSorted : True\n");
+		printf("La collection est triée\n");
     
 	else 
-		printf("isSorted : False\n");
+		printf("La collection n'est pas considérée comme triée\n");
+
+
+	//tant que pvoit n'est pas null
+   	while(pvoit)
+   	{
+   		voi_afficher(pvoit->v);
+   		pvoit = pvoit->nextCell;
+   	}
 }
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -641,6 +635,8 @@ void col_lireFichier(Collection self, FILE* fd)
 		}
 	}
 
+	//On libère la zone mémoire de notre voiture 
+	//current_v qu'on a allouée avec voi_creerFromFichier():
 	voi_detruire(&current_v);
 }
 
