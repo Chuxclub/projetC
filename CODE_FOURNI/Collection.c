@@ -319,57 +319,33 @@ void col_addVoitureAvecTri(Collection self, const_Voiture voiture)
 		VoitureCell currentCell = self->firstCell;
 		int year_current_v = voi_getAnnee(currentCell->v);
 		int year_v = voi_getAnnee(voiture);
-		
-		while(year_v >= year_current_v && hasNext(currentCell))
-		{
-			currentCell = next(currentCell);
-			year_current_v = voi_getAnnee(currentCell->v);
-		}
 
-		//Si l'année du véhicule qu'on veut ajouter "year_v" est plus
-		//petite que l'année du premier véhicule de la collection alors
-		//on n'entre même pas dans la boucle while. La cellule courante
-		//est donc la première cellule de notre collection et on fait 
-		//les branchements appropriés:
-		if(currentCell == self->firstCell)
+		//v' < v1:
+		if(year_v < voi_getAnnee(self->firstCell->v))
 		{
 			newCell->nextCell = self->firstCell;
 			self->firstCell->previousCell = newCell;
 			self->firstCell = newCell;
 		}
 
-		//Si on arrive en bout de collection il y a deux cas de figure...
-		//Premier cas: la boucle while s'est arrêtée car l'année du 
-		//véhicule qu'on veut ajouter est plus petite que 
-		//l'année du véhicule en dernière position. 
-		//On doit alors faire des branchements spécifiques:
-		else if(currentCell == self->lastCell && year_v < year_current_v)
-		{
-			VoitureCell beforeLastCell = self->lastCell->previousCell;
-
-			beforeLastCell->nextCell = newCell;
-			newCell->previousCell = beforeLastCell;
-			newCell->nextCell = self->lastCell;
-			beforeLastCell = newCell;
-		}
-
-		//Second cas: la boucle s'est arrêtée non pas parce que l'année 
-		//était plus petite mais parce que le hasNext() est faux 
-		//(en effet on est en bout de liste). 
-		//Là encore des branchements spécifiques s'imposent:
-		else if(currentCell == self->lastCell && year_v >= year_current_v)
+		//v' >= vn:
+		else if(year_v >= voi_getAnnee(self->lastCell->v))
 		{
 			newCell->previousCell = self->lastCell;
 			self->lastCell->nextCell = newCell;
 			self->lastCell = newCell;
+
 		}
 
-		//Enfin, si aucun des cas ci-dessus n'est rencontré nous sommes 
-		//dans le cas général où une cellule contenant une voiture est 
-		//ajoutée quelque-part dans la collection qui ne soit pas 
-		//aux extrémités:
+		//v1 <= v' < vn:
 		else
 		{
+			while(year_v >= year_current_v)
+			{
+				currentCell = next(currentCell);
+				year_current_v = voi_getAnnee(currentCell->v);
+			}
+
 			newCell->nextCell = currentCell;
 			newCell->previousCell = currentCell->previousCell;
 
