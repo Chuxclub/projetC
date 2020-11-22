@@ -50,24 +50,9 @@ void freeVoitureCell(VoitureCell cell)
 	free(cell);
 }
 
-bool hasPrevious(VoitureCell cell)
-{
-	return cell->previousCell != NULL;
-}
-
-bool hasNext(VoitureCell cell)
-{
-	return cell->nextCell != NULL;
-}
-
 VoitureCell next(VoitureCell cell)
 {
 	return cell->nextCell;
-}
-
-VoitureCell previous(VoitureCell cell)
-{
-	return cell->previousCell;
 }
 
 
