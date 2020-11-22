@@ -110,7 +110,7 @@ Collection col_creer()
 Collection col_creerCopie(const_Collection source)
 {
 	//On vérifie qu'il y a quelque-chose à copier:
-	assert(source->len > 0);
+	myassert(source->len > 0, "La source ne dispose d'aucune collection à copier");
 
 	//On crée la collection qui dans laquelle on 
 	//va copier la collection source:
@@ -217,7 +217,7 @@ int col_getNbVoitures(const_Collection self)
 
 Voiture col_getVoiture(const_Collection self, int pos)
 {
-	assert(pos >= 0 && pos < self->len);
+	myassert(pos >= 0 && pos < self->len, "La position n'est pas correcte");
 
 	VoitureCell current_cell = self->firstCell;
 
@@ -273,9 +273,9 @@ void col_addVoitureSansTri(Collection self, const_Voiture voiture)
 
 void col_addVoitureAvecTri(Collection self, const_Voiture voiture)
 {
-	assert(self->isSorted);
+	myassert(self->isSorted, "La collection n'est pas triée");
 	int n = self->len;
-	assert(n >= 0);
+	myassert(n >= 0, "La taille de la collection est inférieure à 0");
 
 	//Création de la nouvelle cellule:
 	VoitureCell newCell = createVoitureCell(voiture);
@@ -431,8 +431,8 @@ void col_supprVoitureSansTri(Collection self, int pos)
 
 void col_supprVoitureAvecTri(Collection self, int pos)
 {
-	assert(pos >= 0 && pos < self->len);
-	assert(self->len > 0);
+	myassert((pos >= 0 && pos < self->len), "La position entrée n'est pas correcte");
+	myassert((self->len > 0), "Il n'y a rien à supprimer");
 
 	if(self->len == 1)
 	{
@@ -491,7 +491,7 @@ void col_trier(Collection self)
 {
 	//On vérifie qu'il y a au moins 
 	//un élément à trier:
-	assert(self->len > 0);
+	myassert(self->len > 0, "Il n'y a aucun élément à trier");
 
 	//On fait un tri à bulle:
 	int list_end = self->len;
