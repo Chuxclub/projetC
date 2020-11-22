@@ -110,7 +110,7 @@ Collection col_creer()
 Collection col_creerCopie(const_Collection source)
 {
 	//On vérifie qu'il y a quelque-chose à copier:
-	assert(source->len > 0);
+	myassert(source->len > 0, "La source ne dispose d'aucune collection à copier");
 
 	//On crée la collection qui dans laquelle on 
 	//va copier la collection source:
@@ -217,7 +217,7 @@ int col_getNbVoitures(const_Collection self)
 
 Voiture col_getVoiture(const_Collection self, int pos)
 {
-	assert(pos >= 0 && pos < self->len);
+	myassert(pos >= 0 && pos < self->len, "La position n'est pas correcte");
 
 	VoitureCell current_cell = self->firstCell;
 
@@ -273,13 +273,21 @@ void col_addVoitureSansTri(Collection self, const_Voiture voiture)
 
 void col_addVoitureAvecTri(Collection self, const_Voiture voiture)
 {
-	assert(self->isSorted);
+	//On n'ajoute pas avec une fonction d'ajout avec tri de complexité
+	//linéaire dans une collection non triée (la fonction d'ajout sans
+	//tri a une complexité constante:
+	myassert(self->isSorted, "La collection n'est pas triée");
+
+	//Par conception la longueur devrait toujours être >= 0 ...
+	//Si cet assert est invalidé il y a un sérieux problème:
 	int n = self->len;
-	assert(n >= 0);
+	myassert(n >= 0, "La taille de la collection est inférieure à 0");
 
 	//Création de la nouvelle cellule:
 	VoitureCell newCell = createVoitureCell(voiture);
-
+	
+	//Si la collection ne contient initialement aucune voiture on a
+	//des branchements particuliers à faire:
 	if(n == 0)
 	{
 		//Branchements des champs première/dernière cellule
@@ -288,13 +296,15 @@ void col_addVoitureAvecTri(Collection self, const_Voiture voiture)
 		self->lastCell = newCell;
 	}
 
+	//On pose v' la voiture qu'on souhaite ajouter et vk une
+	//voiture de la collection à la position k:
 	else
 	{
 		VoitureCell currentCell = self->firstCell;
 		int year_current_v = voi_getAnnee(currentCell->v);
 		int year_v = voi_getAnnee(voiture);
 
-		//v' < v1:
+		//Cas où v' < v1:
 		if(year_v < voi_getAnnee(self->firstCell->v))
 		{
 			newCell->nextCell = self->firstCell;
@@ -302,7 +312,7 @@ void col_addVoitureAvecTri(Collection self, const_Voiture voiture)
 			self->firstCell = newCell;
 		}
 
-		//v' >= vn:
+		//Cas où v' >= vn:
 		else if(year_v >= voi_getAnnee(self->lastCell->v))
 		{
 			newCell->previousCell = self->lastCell;
@@ -311,7 +321,7 @@ void col_addVoitureAvecTri(Collection self, const_Voiture voiture)
 
 		}
 
-		//v1 <= v' < vn:
+		//Cas où v1 <= v' < vn:
 		else
 		{
 			while(year_v >= year_current_v)
@@ -339,63 +349,10 @@ void col_addVoitureAvecTri(Collection self, const_Voiture voiture)
 
 void col_supprVoitureSansTri(Collection self, int pos)
 {
-	//Vérification de la position et de la présence de quelque chose à supprimer:
-	myassert((pos >= 0 && pos < self->len), "La position entrée n'est pas correcte");
-	myassert((self->len > 0), "Il n'y a rien à supprimer");
+	col_supprVoitureAvecTri(self, pos);
 
-	//Première et unique cellule sélectionnée:
 	if(self->len == 1)
-	{
-		col_vider(self);
-	}
-
-	else
-	{
-		VoitureCell currentCell = self->firstCell;
-
-		//Déplacement dans la collection:
-		for(int i = 0; i < pos; i++)
-		{
-			currentCell = next(currentCell);
-		}
-		
-		//Première cellule:
-		if(currentCell == self->firstCell)
-		{
-			VoitureCell nextCell = currentCell->nextCell;
-
-			nextCell->previousCell = NULL;
-			self->firstCell = nextCell;
-
-			freeVoitureCell(currentCell);
-		}
-
-		//Dernière cellule:
-		else if(currentCell == self->lastCell)
-		{
-			VoitureCell previousCell=currentCell->previousCell;
-
-			previousCell->nextCell = NULL;
-			self->lastCell = previousCell;
-
-			freeVoitureCell(currentCell);
-		}
-
-		//N'importe quelle autre cellule:
-		else
-		{
-			VoitureCell previousCell=currentCell->previousCell;
-			VoitureCell nextCell = currentCell->nextCell;
-
-			//Relie la cellule précédente et suivante:
-			previousCell->nextCell = nextCell;
-			nextCell->previousCell = previousCell;
-			freeVoitureCell(currentCell);
-		}
-	}
-
-	self->len--;
-	   
+		self->isSorted = true;
 }
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -405,14 +362,15 @@ void col_supprVoitureSansTri(Collection self, int pos)
 
 void col_supprVoitureAvecTri(Collection self, int pos)
 {
-	assert(pos >= 0 && pos < self->len);
-	assert(self->len > 0);
+	//Vérification de la position et de la présence 
+	//de quelque chose à supprimer:
+	myassert((pos >= 0 && pos < self->len), "Position incorrecte");
+	myassert((self->len > 0), "Il n'y a rien à supprimer");
+	
 
 	if(self->len == 1)
 	{
-		freeVoitureCell(self->firstCell);
-		self->firstCell = NULL;
-		self->lastCell = NULL;
+		col_vider(self);
 	}
 
 	else
@@ -465,7 +423,7 @@ void col_trier(Collection self)
 {
 	//On vérifie qu'il y a au moins 
 	//un élément à trier:
-	assert(self->len > 0);
+	myassert(self->len > 0, "Il n'y a aucun élément à trier");
 
 	//On fait un tri à bulle:
 	int list_end = self->len;
