@@ -288,32 +288,6 @@ void col_addVoitureAvecTri(Collection self, const_Voiture voiture)
 		self->lastCell = newCell;
 	}
 
-	else if(n == 1)
-	{
-		int year_vInCol = voi_getAnnee(self->firstCell->v);
-		int year_vToAdd = voi_getAnnee(voiture);
-
-		if(year_vToAdd <= year_vInCol)
-		{
-			//Branchements des cellules entre elle:
-			newCell->nextCell = self->firstCell;
-			self->firstCell->previousCell = newCell;
-
-			//Branchements des champs:
-			self->firstCell = newCell;
-		}
-
-		else
-		{
-			//Branchements des cellules entre elle:
-			newCell->previousCell = self->firstCell;
-			self->firstCell->nextCell = newCell;
-
-			//Branchements des champs:
-			self->lastCell = newCell;
-		}
-	}
-
 	else
 	{
 		VoitureCell currentCell = self->firstCell;
